@@ -64,4 +64,21 @@ def process_iap_csv(input_path):
     return df_trim
 
 if __name__ == "__main__":
-    process_iap_csv(RAW_DIR / "iap (1).csv")
+    df_trim = process_iap_csv(RAW_DIR / "iap (1).csv")
+    # PASSO 2: Limpar resultado (remover trimestres com tudo 0)
+    df_trim_clean = df_trim[df_trim['valor_despesas'] > 0].copy()
+    out_clean = PROCESSED_DIR / 'consolidado_despesas_limpo.csv'
+    df_trim_clean.to_csv(out_clean, index=False, encoding='utf-8')
+    print(f"Consolidado limpo salvo em {out_clean}")
+
+    # PASSO 3: Top 5 operadoras por média trimestral de despesas
+    top5 = (
+        df_trim_clean.groupby(['cnpj','razao_social'])['valor_despesas']
+        .mean()
+        .reset_index()
+        .sort_values('valor_despesas', ascending=False)
+        .head(5)
+    )
+    print("\nTop 5 operadoras por média trimestral de despesas:")
+    print(top5)
+    top5.to_csv(PROCESSED_DIR / 'top5_operadoras_media_trimestral.csv', index=False, encoding='utf-8')
