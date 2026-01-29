@@ -1,14 +1,11 @@
-# ambiente virtual
+# ambientes
 venv/
-
-# cache python
 __pycache__/
-*.pyc
 
-# arquivos de dados
+# dados
 data/raw/
 data/processed/
 
-# sistema
-.DS_Store
-Thumbs.db
+# arquivos grandes
+*.zip
+*.csv
